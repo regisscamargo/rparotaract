@@ -7,11 +7,11 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver import Chrome, ChromeOptions
 import pandas as pd
 import pyautogui as p
-import pdfplumber as pdfplumber
-import re
-from collections import namedtuple
-import json
 import time as t
+from selenium import webdriver
+from selenium.webdriver.chrome.service import Service
+from webdriver_manager.chrome import ChromeDriverManager
+from selenium.webdriver.chrome.options import Options
 
 
 # Case são exatamente isso, cases, informações em blocos para serem selecionadas antes do codigo
@@ -37,26 +37,29 @@ match login:
 
 ####### Inicio do código ######
 
-link = 'https://www.instagram.com/'
 
-options = ChromeOptions()
-path_chromedriver = "C:\Chrome Driver\chromedriver.exe"
-prefs = {"download.default_directory": "C:\\Macros\\download"}
-options.add_experimental_option("prefs", prefs)
-navegador = Chrome(chrome_options=options)
-
-# Essa parte é responsavel por abrir o navegador e ir até a pasta desejada
-
+# Essa parte é responsavel por abrir o driver e ir até a pasta desejada
 def inicializaçao():
 
 
-        # Iniciando o Chorme (navegador de preferencia, mas RPA chrome é o recomendado)
-        # Setando o link que o navegador deve abrir 
-        navegador.get = link
-        navegador.maximize_window()
+        # Iniciando o Chorme (driver de preferencia, mas RPA chrome é o recomendado)
+        # Setando o link que o driver deve abrir 
+
+        options = Options()
+        options.add_argument("start-maximized")
+        prefs = {"download.default_directory": "C:\\Users\\Wind Digital\\Downloads"}
+        options.add_experimental_option("prefs", prefs)
+        options.add_argument(
+            'user-data-dir=C:\\Users\\Wind Digital\\AppData\\Local\\Google\\Chrome\\User Data')
+        options.add_argument('profile-directory=Profile')
+        driver = webdriver.Chrome(chrome_options=options, service=Service(ChromeDriverManager().install()))
+
+        driver.get('https://www.instagram.com/')
+        t.sleep(10)
+        driver.maximize_window()
 
         # Informaçõe usadas durante o código, como login, senha, usuário de procura
-        user = ''
+        user = 'regis'
         senha = ''
 
         usuario_pesquisar = 'eita_regis'
@@ -65,23 +68,23 @@ def inicializaçao():
 
                 #Seletor do campo desejado para informar o que queremos fazer
                 #Seletor #Path - //*[@id="loginForm"]/div/div[1]/div/label/input
-                campo_login = navegador.find_element(By. XPATH, '//*[@id="loginForm"]/div/div[1]/div/label/input')
+                campo_login = driver.find_element(By. XPATH, '//*[@id="loginForm"]/div/div[1]/div/label/input')
                 campo_login.send_keys(user)
                 
                 #Seletor #CSS Selector - #loginForm > div > div:nth-child(1) > div > label > input
-                campo_login2 = navegador.find_element(By. CSS_SELECTOR, '#loginForm > div > div:nth-child(1) > div > label > input')
+                campo_login2 = driver.find_element(By. CSS_SELECTOR, '#loginForm > div > div:nth-child(1) > div > label > input')
                 
                 #Seletor #ClassName 
-                campo_login3 = navegador.find_element(By. CLASS_NAME, '#login')
+                campo_login3 = driver.find_element(By. CLASS_NAME, '#login')
 
                 #Seletor #Id
-                campo_login4 = navegador.find_element(By. ID, 'login')
+                campo_login4 = driver.find_element(By. ID, 'login')
 
                 #Campo de preenchimento de senha
-                campo_senha = navegador.find_element(By. XPATH, '//*[@id="loginForm"]/div/div[2]/div/label/input')
+                campo_senha = driver.find_element(By. XPATH, '//*[@id="loginForm"]/div/div[2]/div/label/input')
                 campo_senha.send_keys(senha)
 
-                botao_entrar = navegador.find_element(By. XPATH, '#loginForm > div > div:nth-child(3) > button')
+                botao_entrar = driver.find_element(By. XPATH, '#loginForm > div > div:nth-child(3) > button')
 
                 if botao_entrar != None:
                         botao_entrar.click()
@@ -93,3 +96,4 @@ def inicializaçao():
                 print(e)
                 #Esse print ele informa qual o nome do erro que esta condito dentro TryExpept
 
+inicializaçao()
