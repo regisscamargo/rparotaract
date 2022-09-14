@@ -16,7 +16,7 @@ from selenium.webdriver.chrome.options import Options
 
 # Case são exatamente isso, cases, informações em blocos para serem selecionadas antes do codigo
 
-login = "login1"
+login = "login"
 
 match login: 
     case 'login1':
